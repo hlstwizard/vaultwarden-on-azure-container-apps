@@ -1,5 +1,5 @@
 @description('The Azure region to install it')
-param location string = 'germanywestcentral'
+param location string = 'eastasia'
 
 @description('Base name for all resources')
 param baseName string
@@ -7,10 +7,6 @@ param baseName string
 @description('The password to access the /admin page of the Vaultwarden installation')
 @secure()
 param adminToken string
-
-@description('If you are using sendgrid as a mail provider, set this to your API Key. If you are using another mail provider you have to customize the template.')
-@secure()
-param sendgridSmtpPassword string
 
 @description('Enable VNet integration. NOTE: This will create additional components which produces additional costs.')
 param enableVnetIntegrationWithAdditionalCosts bool = true
@@ -149,10 +145,6 @@ resource vaultwardenapp 'Microsoft.App/containerApps@2023-05-01' = {
           name: 'admintoken'
           value: adminToken
         }
-        {
-          name: 'sendgridsmtppassword'
-          value: sendgridSmtpPassword
-        }
       ]
       activeRevisionsMode: 'Single'
       ingress: {
@@ -190,34 +182,6 @@ resource vaultwardenapp 'Microsoft.App/containerApps@2023-05-01' = {
             {
               name: 'ADMIN_TOKEN'
               secretRef: 'admintoken'
-            }
-            {
-              name: 'SMTP_HOST'
-              value: 'smtp.sendgrid.net'
-            }
-            {
-              name: 'SMTP_FROM'
-              value: 'noreply@yourdomain.com'
-            }
-            {
-              name: 'SMTP_PORT'
-              value: '465'
-            }
-            {
-              name: 'SMTP_SECURITY'
-              value: 'force_tls'
-            }
-            {
-              name: 'SMTP_USERNAME'
-              value: 'apikey'
-            }
-            {
-              name: 'SMTP_PASSWORD'
-              secretRef: 'sendgridsmtppassword'
-            }
-            {
-              name: 'SMTP_AUTH_MECHANISM'
-              value: 'Login'
             }
             {
               name: 'ENABLE_DB_WAL'
